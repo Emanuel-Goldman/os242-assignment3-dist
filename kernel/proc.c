@@ -688,3 +688,65 @@ procdump(void)
     printf("\n");
   }
 }
+
+
+// Function to map shared pages from src_proc to dst_proc
+uint64 map_shared_pages(struct proc* src_proc, struct proc* dst_proc, uint64 src_va, uint64 size) {
+    uint64 src_start_va = PGROUNDDOWN(src_va);
+    uint64 src_end_va = PGROUNDUP(src_va + size);
+    uint64 dst_start_va = PGROUNDUP(dst_proc->sz); // Start mapping at the end of the current address space of dst_proc
+    uint64 dst_va = dst_start_va + (src_va - src_start_va); // Calculate the corresponding address in dst_proc
+ 
+    for (uint64 va = src_start_va; va < src_end_va; va += PGSIZE) {
+        pte_t *pte = walk(src_proc->pagetable, va, 0);
+        if (pte == 0 || !(*pte & PTE_V) || !(*pte & PTE_U)) {
+            panic("map_shared_pages: invalid source address");
+        }
+ 
+        uint64 pa = PTE2PA(*pte);
+        int perm = PTE_FLAGS(*pte) & (PTE_R | PTE_W | PTE_X | PTE_U); // Extract permissions
+        perm |= PTE_S; // Add the shared flag
+ 
+        if (mappages(dst_proc->pagetable, dst_start_va, PGSIZE, pa, perm) != 0) {
+            panic("map_shared_pages: mapping failed");
+        }
+ 
+        dst_start_va += PGSIZE;
+    }
+ 
+    dst_proc->sz = dst_start_va; // Update the size of the destination process address space
+    return dst_va; // Return the virtual address in the destination process
+}
+
+
+uint64 unmap_shared_pages(struct proc* p, uint64 addr, uint64 size) {
+    uint64 start_va = PGROUNDDOWN(addr);
+    uint64 end_va = PGROUNDUP(addr + size);
+
+    for (uint64 va = start_va; va < end_va; va += PGSIZE) {
+        pte_t *pte = walk(p->pagetable, va, 0);
+        if (pte == 0 || !(*pte & PTE_V) || !(*pte & PTE_S)) {
+            return -1; // Invalid address or not a shared mapping
+        }
+
+        // Remove the mapping but do not free the physical page
+        *pte = 0;
+    }
+
+    // Update the size of the address space
+    if (start_va < p->sz && end_va > p->sz) {
+        p->sz = start_va;
+    }
+
+    return 0;
+}
+
+
+struct proc* find_proc(int pid) {
+    for (int i = 0; i < NPROC; i++) {
+        if (proc[i].pid == pid) {
+            return &proc[i];
+        }
+    }
+    return 0;
+}
