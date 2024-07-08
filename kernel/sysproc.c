@@ -101,7 +101,7 @@ sys_map_shared_pages(void)
   argaddr(1, &dst_proc);
   argaddr(2, &src_va);
   argint(3, &size);
-  return map_shared_pages(src_proc, dst_proc, src_va, size);
+  return map_shared_pages((struct proc*)src_proc, (struct proc*)dst_proc, src_va, size);
 }
 
 uint64
@@ -109,11 +109,11 @@ sys_unmap_shared_pages(void)
 {
   uint64 p;
   uint64 addr;
-  uint64 size;
+  int size;
   argaddr(0, &p);
   argaddr(1, &addr);
   argint(2, &size);
-  return unmap_shared_pages(p, addr, size);
+  return unmap_shared_pages((struct proc*)p, addr, size);
 }
 
 uint64 
