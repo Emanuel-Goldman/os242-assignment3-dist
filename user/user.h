@@ -27,7 +27,7 @@ int crypto_op(struct crypto_op*, int);
 int take_shared_memory_request(void**, uint64*);
 int remove_shared_memory_request(void*, uint64);
 int map_shared_pages(uint64, uint64, uint64, uint64);
-int unmap_shared_pages(uint64, uint64);
+int unmap_shared_pages(uint64, uint64, uint64);
 int find_proc(uint64);
 
 // ulib.c
