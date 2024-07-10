@@ -4,7 +4,10 @@
 
 int main(void)
 {
+  
     int ppid = getpid();
+    char *shared_mem = malloc(4096);
+
     // Fork the process
     int pid = fork();
 
@@ -19,9 +22,11 @@ int main(void)
         sleep(1);
         printf("Child process\n");
         pid = getpid();
-        uint64 addr= map_shared_pages(pid, ppid, 0, 4096);
+        printf("The shared_mem addres is: %p\n", &shared_mem);
+       
+        char * addr= map_shared_pages(pid, ppid, (uint64)&shared_mem, 4096);
         printf("Shared memory address: %p\n", &addr);
-        printf("Shared memory content: %s\n", addr);
+        printf("Shared memory content: %s\n", (char*)addr);
         
         // Print the shared memory content
         exit(0);
@@ -29,9 +34,8 @@ int main(void)
     } else {
 
         printf("Parent process\n");
-        char *shared_mem = malloc(4096);
         strcpy(shared_mem, "Hello child");
-        printf("The addres is %p\n", &shared_mem);
+        printf("The shared_mem addres is %p\n", &shared_mem);
         wait(0);
         printf("End parent process\n");
 
