@@ -22,25 +22,19 @@ int main(void)
         sleep(1);
         printf("Child process\n");
         pid = getpid();
-        printf("The shared_mem addres is: %p\n", &shared_mem);
        
-        uint64 addr = map_shared_pages(ppid, pid, (uint64)&shared_mem, 4096);
-        printf("Shared memory address: %p\n", &addr);
+        uint64 addr = map_shared_pages(ppid, pid, (uint64)shared_mem, 4096);
         printf("Shared memory content: %s\n", (char*)addr);
         
-        // Print the shared memory content
         exit(0);
 
     } else {
 
         printf("Parent process\n");
         strcpy(shared_mem, "Hello child");
-        printf("The shared_mem addres is %p\n", &shared_mem);
         wait(0);
-        printf("End parent process\n");
 
-        printf("Parent process\n");
-    }
-
+     }
+    free(shared_mem);
     exit(0);
 }

@@ -93,7 +93,6 @@ sys_uptime(void)
 uint64
 sys_map_shared_pages(void)
 {
-  printf("sys_map_shared_pages began\n");
   int src_pid; 
   int dst_pid;
   struct proc* src_proc;
@@ -109,7 +108,6 @@ sys_map_shared_pages(void)
 
   argaddr(2, &src_va);
   argint(3, &size);
-  printf("sys_map_shared_pages: src_pid: %d, dst_pid: %d, src_va: %p, size: %d\n", src_pid, dst_pid, src_va, size);
   return map_shared_pages(src_proc, dst_proc, src_va, size);
 }
 
