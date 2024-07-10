@@ -110,7 +110,9 @@ sys_map_shared_pages(void)
   argaddr(2, &src_va);
   argint(3, &size);
   printf("sys_map_shared_pages: src_pid: %d, dst_pid: %d, src_va: %p, size: %d\n", src_pid, dst_pid, src_va, size);
-  return map_shared_pages(src_proc, dst_proc, src_va, size);
+  uint64 res = map_shared_pages(src_proc, dst_proc, src_va, size);
+  printf("sys_map_shared_pages ended res is %p \n",res);
+  return res;
 }
 
 uint64

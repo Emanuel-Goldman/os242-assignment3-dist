@@ -19,13 +19,10 @@ int main(void)
     if(pid == 0){
         // Child process
         // Wait for the parent to share the memory
-        sleep(1);
+        sleep(2);
         printf("Child process\n");
-        pid = getpid();
-        printf("The shared_mem addres is: %p\n", &shared_mem);
-       
-        uint64 addr = map_shared_pages(ppid, pid, (uint64)&shared_mem, 4096);
-        printf("Shared memory address: %p\n", &addr);
+        pid = getpid();       
+        uint64 addr = map_shared_pages(ppid, pid, (uint64)shared_mem, 4096);
         printf("Shared memory content: %s\n", (char*)addr);
         
         // Print the shared memory content
@@ -35,11 +32,8 @@ int main(void)
 
         printf("Parent process\n");
         strcpy(shared_mem, "Hello child");
-        printf("The shared_mem addres is %p\n", &shared_mem);
         wait(0);
-        printf("End parent process\n");
 
-        printf("Parent process\n");
     }
 
     exit(0);

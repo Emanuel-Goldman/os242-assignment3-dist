@@ -700,16 +700,23 @@ uint64 map_shared_pages(struct proc* src_proc, struct proc* dst_proc, uint64 src
     uint64 dst_start_va = PGROUNDUP(dst_proc->sz); // Start mapping at the end of the current address space of dst_proc
     uint64 dst_va = dst_start_va + (src_va - src_start_va); // Calculate the corresponding address in dst_proc
 
+    printf("src_start_va: %p, src_end_va: %p, dst_start_va: %p, dst_va: %p\n", src_start_va, src_end_va, dst_start_va, dst_va);
+
     for (uint64 va = src_start_va; va < src_end_va; va += PGSIZE) {
+      printf("inside the for loop \n");
+      printf("va: %p\n", va);
 
       pte_t *pte = walk(src_proc->pagetable, va, 0);
       if (pte == 0 || !(*pte & PTE_V) || !(*pte & PTE_U)) {
           panic("map_shared_pages: invalid source address");
       }
-
+      printf("pte: %p\n", pte);
       uint64 pa = PTE2PA(*pte);
+      printf("pa: %p\n", pa);
       int perm = PTE_FLAGS(*pte) & (PTE_R | PTE_W | PTE_X | PTE_U); // Extract permissions
-      perm |= PTE_S; // Add the shared flag
+      // perm |= PTE_S; // Add the shared flag
+
+      printf("perm: %p\n", perm);
  
       if (mappages(dst_proc->pagetable, dst_start_va, PGSIZE, pa, perm) != 0) {
         
@@ -720,6 +727,7 @@ uint64 map_shared_pages(struct proc* src_proc, struct proc* dst_proc, uint64 src
     }
  
     dst_proc->sz = dst_start_va; // Update the size of the destination process address space
+    printf("at the end of map_shared_pages dst_va is %p\n", dst_va);
     return dst_va; // Return the virtual address in the destination process
 }
 
@@ -730,7 +738,7 @@ uint64 unmap_shared_pages(struct proc* p, uint64 addr, uint64 size) {
 
     for (uint64 va = start_va; va < end_va; va += PGSIZE) {
         pte_t *pte = walk(p->pagetable, va, 0);
-        if (pte == 0 || !(*pte & PTE_V) || !(*pte & PTE_S)) {
+        if (pte == 0 || !(*pte & PTE_V) || !(*pte)) {
             return -1; // Invalid address or not a shared mapping
         }
 
