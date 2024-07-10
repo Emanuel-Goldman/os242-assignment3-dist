@@ -24,7 +24,7 @@ int main(void)
         pid = getpid();
         printf("The shared_mem addres is: %p\n", &shared_mem);
        
-        char * addr= map_shared_pages(pid, ppid, (uint64)&shared_mem, 4096);
+        uint64 addr = map_shared_pages(ppid, pid, (uint64)&shared_mem, 4096);
         printf("Shared memory address: %p\n", &addr);
         printf("Shared memory content: %s\n", (char*)addr);
         

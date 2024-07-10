@@ -693,6 +693,8 @@ procdump(void)
 // Function to map shared pages from src_proc to dst_proc
 uint64 map_shared_pages(struct proc* src_proc, struct proc* dst_proc, uint64 src_va, uint64 size) {
 
+    printf("We are in the map_shared_pages function\n");
+
     uint64 src_start_va = PGROUNDDOWN(src_va);
     uint64 src_end_va = PGROUNDUP(src_va + size);
     uint64 dst_start_va = PGROUNDUP(dst_proc->sz); // Start mapping at the end of the current address space of dst_proc
