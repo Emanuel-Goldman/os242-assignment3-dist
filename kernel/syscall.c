@@ -107,6 +107,7 @@ extern uint64 sys_remove_shared_memory_request(void);
 extern uint64 sys_map_shared_pages(void);
 extern uint64 sys_unmap_shared_pages(void);
 extern uint64 sys_find_proc(void);
+extern uint64 sys_memsize(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -138,6 +139,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_map_shared_pages] sys_map_shared_pages,
 [SYS_unmap_shared_pages] sys_unmap_shared_pages,
 [SYS_find_proc] sys_find_proc,
+[SYS_memsize] sys_memsize,
 };
 
 void

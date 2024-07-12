@@ -31,6 +31,8 @@ uint64 sys_crypto_op(void) {
         return -1;
     }
 
+    printf("sys_crypto_op\n");
+
     uint64 crypto_op;
     uint64 size;
 

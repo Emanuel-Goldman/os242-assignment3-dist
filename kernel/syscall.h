@@ -26,3 +26,4 @@
 #define SYS_map_shared_pages 27
 #define SYS_unmap_shared_pages 28
 #define SYS_find_proc 29
+#define SYS_memsize 30

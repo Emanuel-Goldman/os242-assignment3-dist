@@ -111,6 +111,7 @@ void            procdump(void);
 uint64          map_shared_pages(struct proc* src_proc,struct proc* dst_proc,uint64 src_va, uint64 size);
 uint64          unmap_shared_pages(struct proc* p, uint64 addr, uint64 size);
 struct proc*    find_proc(int pid);
+int             memsize(void);
 
 // shmem_queue.c
 void            shmem_queue_init(void);

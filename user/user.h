@@ -29,6 +29,7 @@ int remove_shared_memory_request(void*, uint64);
 int map_shared_pages(uint64, uint64, uint64, uint64);
 int unmap_shared_pages(uint64, uint64, uint64);
 int find_proc(uint64);
+int memsize(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

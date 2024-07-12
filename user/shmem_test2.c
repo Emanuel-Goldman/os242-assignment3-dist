@@ -20,11 +20,13 @@ int main(void)
         int pid = getpid();
         strcpy(shared_mem, "Hello daddy");
         sleep(7); // Simulate some work
-
+        printf("Before unmap Memsize: %d\n", memsize());
         printf("unmapping\n");
         unmap_shared_pages(pid, (uint64)shared_mem, 4096);
-        char *new_mem = malloc(4096);
-        strcpy(new_mem, "Unmapped successfully\n");
+        printf("Affter unmap before malloc Memsize: %d\n", memsize());
+        char *new_mem = malloc(409600);
+        strcpy(new_mem, "Unmapped successfully \n");
+        printf("Affter malloc Memsize: %d\n", memsize());
         printf("new_mem: %s\n", new_mem);
         free(new_mem);
         exit(0);
@@ -34,7 +36,9 @@ int main(void)
         sleep(2);
         printf("Parent process\n");
         int ppid = getpid();
+        printf("memory size before map: %d\n", memsize());
         uint64 addr = map_shared_pages(pid, ppid, (uint64)shared_mem, 4096);
+        printf("memory size after map: %d\n", memsize());
         printf("Shared memory content: %s\n", (char *)addr);
         wait(0);
     }

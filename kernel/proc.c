@@ -732,6 +732,7 @@ uint64 unmap_shared_pages(struct proc* p, uint64 addr, uint64 size) {
             return -1; // Invalid address or not a shared mapping
         }
 
+        uvmunmap(p->pagetable, va, 1, 1);
         // Remove the mapping but do not free the physical page
         *pte = 0;
     }
@@ -752,4 +753,8 @@ struct proc* find_proc(int pid) {
         }
     }
     return 0;
+}
+
+int memsize() {
+  return myproc()->sz;
 }

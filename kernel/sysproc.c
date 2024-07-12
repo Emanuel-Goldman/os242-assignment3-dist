@@ -132,3 +132,9 @@ sys_find_proc(void)
   argint(0, &pid);
   return (uint64)find_proc(pid);
 }
+
+int
+sys_memsize(void)
+{
+  return memsize();
+}
