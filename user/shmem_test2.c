@@ -39,7 +39,7 @@ int main(void)
         printf("memory size before map: %d\n", memsize());
         uint64 addr = map_shared_pages(pid, ppid, (uint64)shared_mem, 4096);
         printf("memory size after map: %d\n", memsize());
-        printf("Shared memory content: %s\n", (char *)addr);
+        printf("Massege from my child: %s\n", (char *)addr);
         wait(0);
     }
     free(shared_mem);

@@ -24,7 +24,7 @@ int main(void)
         pid = getpid();
        
         uint64 addr = map_shared_pages(ppid, pid, (uint64)shared_mem, 4096);
-        printf("Shared memory content: %s\n", (char*)addr);
+        printf("Massege from my daddy: %s\n", (char*)addr);
         
         exit(0);
 
