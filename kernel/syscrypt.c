@@ -55,9 +55,7 @@ uint64 sys_take_shared_memory_request(void) {
   }
   const struct shmem_request req = shmem_queue_remove();
   struct proc* src_proc = find_proc(req.src_pid);
-  /////////////////////////
-  acquire(&src_proc->lock);
-  /////////////////////////
+
   if (src_proc == 0) {
     return -1;
   }
@@ -90,6 +88,7 @@ uint64 sys_remove_shared_memory_request(void) {
 
   argaddr(0, &src_va);
   argaddr(1, &size);
+
 
   return unmap_shared_pages(p, src_va, size);
 }

@@ -718,29 +718,42 @@ uint64 map_shared_pages(struct proc* src_proc, struct proc* dst_proc, uint64 src
     }
  
     dst_proc->sz = dst_start_va; // Update the size of the destination process address space
+    // release(&dst_proc->lock); // Release the lock on the destination process (acquired in allocproc())
+    // release(&src_proc->lock); // Release the lock on the source process (acquired in find_proc())
     return dst_va; // Return the virtual address in the destination process
 }
 
 
 uint64 unmap_shared_pages(struct proc* p, uint64 addr, uint64 size) {
+    printf("unmap_shared_pages function\n");
     uint64 start_va = PGROUNDDOWN(addr);
     uint64 end_va = PGROUNDUP(addr + size);
 
     for (uint64 va = start_va; va < end_va; va += PGSIZE) {
+        printf("insdi the for loop");
         pte_t *pte = walk(p->pagetable, va, 0);
         if (pte == 0 || !(*pte & PTE_V) || !(*pte & PTE_S)) {
+            // If I hold the lock, I should release it before returning
+            // release(&p->lock);
             return -1; // Invalid address or not a shared mapping
         }
+
+        printf("befor the uvnmap");
 
         uvmunmap(p->pagetable, va, 1, 1);
         // Remove the mapping but do not free the physical page
         *pte = 0;
     }
 
+    printf("unmap_shared_pages function middle\n");
+
     // Update the size of the address space
     if (start_va < p->sz && end_va > p->sz) {
         p->sz = start_va;
     }
+    printf("just before the release\n");
+    // release(&p->lock);
+    printf("just affter the release\n");
 
     return 0;
 }
@@ -749,6 +762,7 @@ uint64 unmap_shared_pages(struct proc* p, uint64 addr, uint64 size) {
 struct proc* find_proc(int pid) {
     for (int i = 0; i < NPROC; i++) {
         if (proc[i].pid == pid) {
+            acquire(&proc[i].lock);
             return &proc[i];
         }
     }
