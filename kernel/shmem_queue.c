@@ -58,6 +58,8 @@ shmem_queue_insert(int src_pid, int dst_pid, uint64 src_va, uint64 size)
   if (shmem_queue.read_idx == -1)
       shmem_queue.read_idx = 0;
 
+  printf("shmem_queue_insert: src_pid=%d, dst_pid=%d, src_va=%p, size=%d\n",src_pid, dst_pid, src_va, size);
+  printf("waking up the shmem_queue\n");
   wakeup(&shmem_queue);
 
   release(&shmem_queue.lock);
@@ -66,6 +68,7 @@ shmem_queue_insert(int src_pid, int dst_pid, uint64 src_va, uint64 size)
 struct shmem_request
 shmem_queue_remove(void)
 {
+  printf("We are in shmem_queue_remove\n");
   acquire(&shmem_queue.lock);
 
   while (shmem_queue.read_idx == -1 || shmem_queue.read_idx == shmem_queue.write_idx)
@@ -78,7 +81,7 @@ shmem_queue_remove(void)
   shmem_queue.read_idx = (shmem_queue.read_idx + 1) % NSHMEM_REQS;
 
   wakeup(&shmem_queue);
-
+  printf("We are trying to do a release\n");
   release(&shmem_queue.lock);
 
   return req;

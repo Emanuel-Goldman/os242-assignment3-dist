@@ -8,6 +8,7 @@
 #include "kernel/crypto.h"
 
 int main(void) {
+
   // Ensure this process is started by the kernel with PID 2
   if(getpid() != 2) {
     printf("Process not started by kernel with PID 2, exiting.\n");
@@ -32,6 +33,7 @@ int main(void) {
   uint64 size;
 
   while(1) {
+    printf("crypto_srv: we are in the while loop\n");
     // Take a shared memory request
     if(take_shared_memory_request(&addr, &size) < 0) {
       printf("No shared memory request available, continuing.\n");

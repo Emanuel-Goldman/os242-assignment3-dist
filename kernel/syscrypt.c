@@ -31,7 +31,7 @@ uint64 sys_crypto_op(void) {
         return -1;
     }
 
-    printf("sys_crypto_op\n");
+    printf("entering the sys_crypto_op funciton\n");
 
     uint64 crypto_op;
     uint64 size;
@@ -40,6 +40,8 @@ uint64 sys_crypto_op(void) {
     argaddr(1, &size);
 
     const struct proc *p = myproc();
+
+    printf("We are entering the shmem_queue_insert funcion\n");
 
     // Record crypto operation request in the shmem queue
     shmem_queue_insert(p->pid, crypto_srv_proc->pid, crypto_op, size);
@@ -52,7 +54,7 @@ uint64 sys_take_shared_memory_request(void) {
   if (crypto_srv_proc == 0 || p != crypto_srv_proc) {
       return -1;
   }
-
+  printf("We are in the sys_take_shared_memory_request\n");
   const struct shmem_request req = shmem_queue_remove();
   
   struct proc* src_proc = find_proc(req.src_pid);
@@ -96,6 +98,7 @@ uint64 sys_remove_shared_memory_request(void) {
 void
 crypto_srv_init(void)
 {
+  printf("crypto_srv_init\n");
   struct proc* p = allocproc();
   crypto_srv_proc = p;
   
