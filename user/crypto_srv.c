@@ -33,14 +33,11 @@ int main(void) {
   uint64 size;
 
   while(1) {
-    printf("crypto_srv: we are in the while loop\n");
     // Take a shared memory request
     if(take_shared_memory_request(&addr, &size) < 0) {
       printf("No shared memory request available, continuing.\n");
       continue;
     }
-
-    printf("Shared memory request taken: addr=%p, size=%lu\n", addr, size);
 
     struct crypto_op* op = (struct crypto_op*) addr;
 
@@ -62,7 +59,6 @@ int main(void) {
     }
 
     // Perform the cryptographic operation (XOR encryption/decryption)
-    printf("Performing cryptographic operation: type=%d, key_size=%lu, data_size=%lu\n", op->type, op->key_size, op->data_size);
     for(uint64 i = 0; i < op->data_size; i++) {
       op->payload[op->key_size + i] ^= op->payload[i % op->key_size];
     }
@@ -72,11 +68,9 @@ int main(void) {
 
     // Mark the request as done
     op->state = CRYPTO_OP_STATE_DONE;
-    printf("Cryptographic operation completed: state=%d\n", op->state);
 
     // Remove the shared memory mapping
     remove_shared_memory_request(addr, size);
-    printf("Shared memory request removed: addr=%p, size=%lu\n", addr, size);
   }
 
   exit(0);

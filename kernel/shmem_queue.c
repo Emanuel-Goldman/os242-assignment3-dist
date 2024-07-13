@@ -58,8 +58,6 @@ shmem_queue_insert(int src_pid, int dst_pid, uint64 src_va, uint64 size)
   if (shmem_queue.read_idx == -1)
       shmem_queue.read_idx = 0;
 
-  printf("shmem_queue_insert: src_pid=%d, dst_pid=%d, src_va=%p, size=%d\n",src_pid, dst_pid, src_va, size);
-  printf("waking up the shmem_queue\n");
   wakeup(&shmem_queue);
 
   release(&shmem_queue.lock);
